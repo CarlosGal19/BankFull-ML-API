@@ -6,3 +6,4 @@ scikit-learn
 pandas
 gunicorn
 Flask-SQLAlchemy
+psycopg2-binary
