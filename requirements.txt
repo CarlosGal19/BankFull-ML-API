@@ -7,3 +7,4 @@ pandas
 gunicorn
 Flask-SQLAlchemy
 psycopg2-binary
+psycopg2
