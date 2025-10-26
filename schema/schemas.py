@@ -50,6 +50,7 @@ class Prediction(db.Model):
     balance = db.Column(db.Float, nullable=False)
     housing = db.Column(db.Boolean, nullable=False)
     loan = db.Column(db.Boolean, nullable=False)
+    day = db.Column(db.Integer, nullable=False)
     duration = db.Column(db.Integer, nullable=False)
     campaign = db.Column(db.Integer, nullable=False)
     pdays = db.Column(db.Integer, nullable=False)
