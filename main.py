@@ -88,12 +88,22 @@ def make_prediction():
         "predicted_value": predicted_value
     })
 
-@app.route("/last_predictions", methods=["GET"])
+@app.route("/predictions", methods=["GET"])
 def get_last_predictions():
-    last_predictions = Prediction.query.order_by(Prediction.id.desc()).limit(10).all()
-    serialized_predictions = []
-    for pred in last_predictions:
-        serialized_predictions.append({
+
+    take = request.args.get("take", default=10, type=int)
+    skip = request.args.get("skip", default=0, type=int)
+
+    last_predictions = (
+        Prediction.query
+        .order_by(Prediction.id.desc())
+        .offset(skip)
+        .limit(take)
+        .all()
+    )
+
+    serialized_predictions = [
+        {
             "id": pred.id,
             "age": pred.age,
             "default": pred.default,
@@ -112,5 +122,8 @@ def get_last_predictions():
             "month_name": pred.month.name,
             "poutcome_name": pred.poutcome.name,
             "predicted_value": pred.predicted_value
-        })
+        }
+        for pred in last_predictions
+    ]
+
     return jsonify(serialized_predictions)
