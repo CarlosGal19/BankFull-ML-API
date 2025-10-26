@@ -4,3 +4,4 @@ SQLAlchemy
 joblib
 scikit-learn
 pandas
+gunicorn
