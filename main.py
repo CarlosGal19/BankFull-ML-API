@@ -91,14 +91,16 @@ def make_prediction():
 @app.route("/predictions", methods=["GET"])
 def get_last_predictions():
 
-    take = request.args.get("take", default=10, type=int)
-    skip = request.args.get("skip", default=0, type=int)
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=10, type=int)
+
+    skip = (page - 1) * per_page
 
     last_predictions = (
         Prediction.query
         .order_by(Prediction.id.desc())
         .offset(skip)
-        .limit(take)
+        .limit(per_page)
         .all()
     )
 
@@ -126,4 +128,8 @@ def get_last_predictions():
         for pred in last_predictions
     ]
 
-    return jsonify(serialized_predictions)
+    return jsonify({
+        "page": page,
+        "per_page": per_page,
+        "data": serialized_predictions
+    })
