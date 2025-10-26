@@ -88,7 +88,34 @@ def make_prediction():
         "predicted_value": predicted_value
     })
 
+@app.route("/last_predictions", methods=["GET"])
+def get_last_predictions():
+    last_predictions = Prediction.query.order_by(Prediction.id.desc()).limit(10).all()
+    serialized_predictions = []
+    for pred in last_predictions:
+        serialized_predictions.append({
+            "id": pred.id,
+            "age": pred.age,
+            "default": pred.default,
+            "balance": pred.balance,
+            "housing": pred.housing,
+            "loan": pred.loan,
+            "day": pred.day,
+            "duration": pred.duration,
+            "campaign": pred.campaign,
+            "pdays": pred.pdays,
+            "previous": pred.previous,
+            "job_name": pred.job.name,
+            "marital_name": pred.marital.name,
+            "education_level_name": pred.education_level.name,
+            "contact_name": pred.contact.name,
+            "month_name": pred.month.name,
+            "poutcome_name": pred.poutcome.name,
+            "predicted_value": pred.predicted_value
+        })
+    return jsonify(serialized_predictions)
+
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # crea tablas
+        db.create_all()
     app.run(host='0.0.0.0', port=port, debug=True)

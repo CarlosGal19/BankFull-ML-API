@@ -128,8 +128,6 @@ def get_prediction(casted_data: dict) -> float:
 
     df_predict = pd.DataFrame(transformed_data, index=[0])
 
-    print("Data for prediction:", df_predict.columns)
-
     df_scaled = scaler.transform(df_predict)
 
     probs = model.predict_proba(df_scaled)[:,1]
