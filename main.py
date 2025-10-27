@@ -37,56 +37,61 @@ def get_form_options():
 @app.route("/prediction", methods=["POST"])
 def make_prediction():
 
-    data = request.get_json()
-    casted_data = {}
+    try:
+        data = request.get_json()
+        casted_data = {}
 
-    casted_data['age'] = int(data.get("age"))
-    casted_data['default'] = bool(data.get("default"))
-    casted_data['balance'] = float(data.get("balance"))
-    casted_data['housing'] = bool(data.get("housing"))
-    casted_data['loan'] = bool(data.get("loan"))
-    casted_data['day'] = int(data.get("day"))
-    casted_data['duration'] = int(data.get("duration"))
-    casted_data['campaign'] = int(data.get("campaign"))
-    casted_data['pdays'] = int(data.get("pdays"))
-    casted_data['previous'] = int(data.get("previous"))
-    casted_data['job_id'] = int(data.get("job_id"))
-    casted_data['marital_id'] = int(data.get("marital_id"))
-    casted_data['education_level_id'] = int(data.get("education_level_id"))
-    casted_data['contact_id'] = int(data.get("contact_id"))
-    casted_data['month_id'] = int(data.get("month_id"))
-    casted_data['poutcome_id'] = int(data.get("poutcome_id"))
-    casted_data['real_value'] = data.get("real_value", None)
+        casted_data['age'] = int(data.get("age"))
+        casted_data['default'] = bool(data.get("default"))
+        casted_data['balance'] = float(data.get("balance"))
+        casted_data['housing'] = bool(data.get("housing"))
+        casted_data['loan'] = bool(data.get("loan"))
+        casted_data['day'] = int(data.get("day"))
+        casted_data['duration'] = int(data.get("duration"))
+        casted_data['campaign'] = int(data.get("campaign"))
+        casted_data['pdays'] = int(data.get("pdays"))
+        casted_data['previous'] = int(data.get("previous"))
+        casted_data['job_id'] = int(data.get("job_id"))
+        casted_data['marital_id'] = int(data.get("marital_id"))
+        casted_data['education_level_id'] = int(data.get("education_level_id"))
+        casted_data['contact_id'] = int(data.get("contact_id"))
+        casted_data['month_id'] = int(data.get("month_id"))
+        casted_data['poutcome_id'] = int(data.get("poutcome_id"))
+        casted_data['real_value'] = data.get("real_value", None)
 
-    predicted_value = get_prediction(casted_data)
+        predicted_value = get_prediction(casted_data)
 
-    prediction = Prediction(
-        age=casted_data['age'],
-        default=casted_data['default'],
-        balance=casted_data['balance'],
-        housing=casted_data['housing'],
-        loan=casted_data['loan'],
-        day=casted_data['day'],
-        duration=casted_data['duration'],
-        campaign=casted_data['campaign'],
-        pdays=casted_data['pdays'],
-        previous=casted_data['previous'],
-        job_id=casted_data['job_id'],
-        marital_id=casted_data['marital_id'],
-        education_level_id=casted_data['education_level_id'],
-        contact_id=casted_data['contact_id'],
-        month_id=casted_data['month_id'],
-        poutcome_id=casted_data['poutcome_id'],
-        predicted_value=predicted_value,
-        real_value=casted_data['real_value'] if casted_data['real_value'] is not None else None
-    )
+        prediction = Prediction(
+            age=casted_data['age'],
+            default=casted_data['default'],
+            balance=casted_data['balance'],
+            housing=casted_data['housing'],
+            loan=casted_data['loan'],
+            day=casted_data['day'],
+            duration=casted_data['duration'],
+            campaign=casted_data['campaign'],
+            pdays=casted_data['pdays'],
+            previous=casted_data['previous'],
+            job_id=casted_data['job_id'],
+            marital_id=casted_data['marital_id'],
+            education_level_id=casted_data['education_level_id'],
+            contact_id=casted_data['contact_id'],
+            month_id=casted_data['month_id'],
+            poutcome_id=casted_data['poutcome_id'],
+            predicted_value=predicted_value,
+            real_value=casted_data['real_value'] if casted_data['real_value'] is not None else None
+        )
 
-    db.session.add(prediction)
-    db.session.commit()
+        db.session.add(prediction)
+        db.session.commit()
 
-    return jsonify({
-        "predicted_value": predicted_value
-    })
+        return jsonify({
+            "predicted_value": predicted_value
+        })
+    except Exception as e:
+        return jsonify({
+            "error": str(e)
+        }), 400
 
 @app.route("/predictions", methods=["GET"])
 def get_last_predictions():
