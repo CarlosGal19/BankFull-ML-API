@@ -6,11 +6,13 @@ import os
 from schema.schemas import Education, Job, Marital, Contact, Month, Poutcome, Prediction
 from helpers.catalogs import serialize_catalog
 from helpers.get_prediction import get_prediction
+from flask_cors import CORS
 
 load_dotenv()
 
 app = Flask(__name__)
 app.config.from_object(Config)
+CORS(app)
 
 db.init_app(app)
 
