@@ -136,8 +136,12 @@ def get_last_predictions():
         for pred in last_predictions
     ]
 
+
+    total_records = Prediction.query.count()
+
     return jsonify({
         "page": page,
         "per_page": per_page,
+        "total_records": total_records,
         "data": serialized_predictions
     })
