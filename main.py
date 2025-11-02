@@ -88,7 +88,8 @@ def make_prediction():
         db.session.commit()
 
         return jsonify({
-            "predicted_value": predicted_value
+            "predicted_value": predicted_value,
+            "final_result": True if predicted_value > 0.43 else False
         })
     except Exception as e:
         return jsonify({
