@@ -1,8 +1,12 @@
 import joblib
 import pandas as pd
+from tensorflow.keras.models import load_model
 
-model = joblib.load("./model/logistic_model_20251026_114819.pkl")
-scaler = joblib.load("./model/scaler_20251026_114819.pkl")
+machine_learning_model = joblib.load("./model/logistic_model_20251026_114819.pkl")
+machine_learning_scaler = joblib.load("./model/scaler_20251026_114819.pkl")
+
+deep_learning_model = load_model("./model/dnn_model.keras")
+deep_learning_scaler = joblib.load("./model/dnn_scaler.pkl")
 
 jobs = {
     4: "blue-collar",
@@ -123,13 +127,21 @@ def transform_data(casted_data: dict) -> dict:
 
     return transformed_data
 
-def get_prediction(casted_data: dict) -> float:
+def get_prediction(casted_data: dict, selected_model) -> float:
     transformed_data = transform_data(casted_data)
 
     df_predict = pd.DataFrame(transformed_data, index=[0])
 
-    df_scaled = scaler.transform(df_predict)
+    if selected_model == "machine_learning":
 
-    probs = model.predict_proba(df_scaled)[:,1]
+        df_scaled = machine_learning_scaler.transform(df_predict)
+        probs = machine_learning_model.predict_proba(df_scaled)[:,1]
+        return float(probs[0])
 
-    return float(probs[0])
+    if selected_model == "deep_learning":
+
+        df_scaled = deep_learning_scaler.transform(df_predict)
+        probs = deep_learning_model.predict(df_scaled)[0][0]
+        return float(probs)
+
+    return -1

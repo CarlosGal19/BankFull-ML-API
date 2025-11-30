@@ -61,7 +61,9 @@ def make_prediction():
         casted_data['poutcome_id'] = int(data.get("poutcome_id"))
         casted_data['real_value'] = data.get("real_value", None)
 
-        predicted_value = get_prediction(casted_data)
+        selected_model = data.get("selected_model", "machine_learning")
+
+        predicted_value = get_prediction(casted_data, selected_model)
 
         prediction = Prediction(
             age=casted_data['age'],
@@ -89,7 +91,8 @@ def make_prediction():
 
         return jsonify({
             "predicted_value": predicted_value,
-            "final_result": True if predicted_value > 0.43 else False
+            "final_result": True if predicted_value > 0.43 else False,
+            "selected_model": selected_model
         })
     except Exception as e:
         return jsonify({
